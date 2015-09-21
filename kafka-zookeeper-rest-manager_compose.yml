@@ -1,0 +1,32 @@
+zookeeper:
+  image: dockerkafka/zookeeper
+  ports:
+   - "2181:2181"
+   - "2888:2888"
+   - "3888:3888"
+   - "5000:5000"
+
+kafka:
+  image: dockerkafka/kafka
+  ports:
+    - "9092:9092"
+  links:
+    - zookeeper:zookeeper
+
+confluent:
+  image: dockerkafka/confluent-kafka-rest
+  ports:
+    - "8082:8082"
+  links:
+    - zookeeper:zookeeper
+    - kafka:kafka
+
+kafka-manager:
+  image: dockerkafka/kafka-manager
+  environment:
+  - ZK_HOSTS=zookeeper:2181
+  ports:
+    - "9000:9000"
+  links:
+    - zookeeper:zookeeper
+    - kafka:kafka
